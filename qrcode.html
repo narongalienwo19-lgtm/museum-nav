@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code — นำทางไปตึกขายบัตร</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            min-height: 100vh;
+            font-family: 'Prompt', sans-serif;
+            background: 
+            radiaal-gradient(ellipse at 30% 40%, rgba(108,92,231,0.12) 0%, transparent 50%),
+            radial-gradient(ellipse at 70% 60%, rgba(0,206,255,0.08) 0%, transparent 50%),
+            #0A0A1A;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    /* ========== LANGUAGE TOGGLE ========== */
+    .lang-toggle {
+        position: fixed;
+        top: max(env(safe-area-inset-top, 20px), 20px);
+        right: 15px;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: background 0.2s, transform 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .lang-toggle:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .lang-toggle:active {
+        transform: scale(0.95);
+    }
+
+    .lang-toggle::before {
+        content: '🌐';
+        font-size: 1rem;
+    }
+
+        .card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(135deg, #fff 0%, #00CEFF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        #qr-container {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        #qr-container canvas {
+            display: block;
+        }
+
+        .url-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            color: #00CEFF;
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .instructions {
+            text-align: left;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin-bottom: 0.3rem;
+        }
+
+        .instructions strong {
+            color: #fff;
+        }
+
+        .btn-print {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Prompt', sans-serif;
+            color: #fff;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A855F7 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-print:active { transform: scale(0.97); }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #6C5CE7;
+        }
+
+        .input-group button {
+            padding: 0.7rem 1.2rem;
+            border-radius: 12px;
+            border: none;
+            background: #6C5CE7;
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        @media print {
+            body { background: #fff; color: #000; }
+            .card { border: 2px solid #000; backdrop-filter: none; background: #fff; }
+            h1 { -webkit-text-fill-color: #000; background: none; }
+            .subtitle { color: #666; }
+            .btn-print, .input-group, .lang-toggle { display: none !important; }
+            .url-box { color: #333; border-color: #ccc; }
+            .instructions strong { color: #000; }
+        }
+    </style>
+    <script>
+        // Force LINE to open in external browser (Chrome/Safari)
+        if (navigator.userAgent.indexOf("Line") > -1) {
+            let url = window.location.href;
+            if (url.indexOf("?") > -1) {
+                url += "&openExternalBrowser=1";
+            } else {
+                url += "?openExternalBrowser=1";
+            }
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <!-- ========== LANGUAGE TOGGLE ========== -->
+    <div class="lang-toggle" onclick="toggleLanguage()">
+        <span id="lang-text" title="switch language: TH/EN/ZH">EN</span>
+    </div>
+
+    <div class="card">
+        <h1 data-i18n="qr_title">🏛️ นำทางไปตึกขายบัตร</h1>
+        <p class="subtitle" data-i18n="qr_subtitle">สแกน QR Code เพื่อเปิดระบบนำทางเท้าบรรจบกับ Google Maps</p>
+
+        <div class="input-group">
+            <select id="route-select" onchange="generateQR()" style="flex: 1; padding: 0.7rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-family: 'Prompt', sans-serif; font-size: 0.85rem; outline: none; appearance: none;">
+                <option value="ticket_office" data-i18n="route_ticket">ตึกขายบัตร</option>
+                <option value="museum_entrance" data-i18n="route_entrance">ทางเข้าพิพิธภัณฑ์</option>
+            </select>
+            <button onclick="generateQR()" data-i18n="qr_btn_gen" style="display: none;">สร้าง QR</button>
+        </div>
+
+        <div id="qr-container"></div>
+
+        <div class="url-box" id="url-display">กำลังสร้าง URL...</div>
+
+        <ol class="instructions">
+            <li><strong data-i18n="qr_step1_b">สแกน</strong> <span data-i18n="qr_step1_t">QR Code ด้วยกล้องมือถือ</span></li>
+            <li><strong data-i18n="qr_step2_b">เปิด</strong> <span data-i18n="qr_step2_t">ลิงก์ในเบราว์เซอร์</span></li>
+            <li><strong data-i18n="qr_step3_b">กดปุ่ม</strong> <span data-i18n="qr_step3_t">"เริ่มนำทาง (Google Maps)"</span></li>
+            <li><strong data-i18n="qr_step4_b">เดินตาม</strong> <span data-i18n="qr_step4_t">เส้นทางในแอป Google Maps</span></li>
+        </ol>
+
+        <button class="btn-print" onclick="window.print()">
+            🖨️ <span data-i18n="qr_btn_print">พิมพ์ QR Code</span>
+        </button>
+    </div>
+
+    <script>
+        function generateQR() {
+            // Auto-determine base URL relative to current location
+            let baseUrl = window.location.href.split('?')[0].replace('qrcode.html', '');
+            if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+            
+            // Add route parameter
+            const routeId = document.getElementById('route-select').value;
+            const url = `${baseUrl}/index.html?route=${routeId}`;
+            
+            const container = document.getElementById('qr-container');
+            container.innerHTML = '<p style="color:#000;">กำลังสร้าง QR Code...</p>';
+            
+            // Use qrserver API as a reliable alternative
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+            
+            const img = new Image();
+            img.onload = function() {
+                container.innerHTML = '';
+                container.appendChild(img);
+            };
+            img.onerror = function() {
+                container.innerHTML = '<p style="color:red;">เกิดข้อผิดพลาดในการสร้าง QR Code จากเซิร์ฟเวอร์ (API Error)</p>';
+            };
+            img.src = qrImageUrl;
+            img.style.display = 'block';
+            img.style.width = '250px';
+            img.style.height = '250px';
+            
+            document.getElementById('url-display').textContent = url;
+        }
+
+        // Auto-generate on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('route')) {
+                document.getElementById('route-select').value = params.get('route');
+            }
+            generateQR();
+        });
+
+        // ---------- TRANSLATIONS ----------
+        const translations = {
+            th: {
+                qr_title: "🏛️ สร้าง QR Code นำทาง",
+                qr_subtitle: "เลือกระบบนำทางและสแกน QR Code เพื่อเปิดระบบนำทางเท้า",
+                qr_placeholder: "ใส่ URL ของระบบ หน้าหลัก (ไม่มี / ต่อท้าย)",
+                qr_btn_gen: "สร้าง QR",
+                qr_url_req: "กรุณาใส่ URL และเลือกเป้าหมาย",
+                route_ticket: "ปลายทาง: ตึกขายบัตร",
+                route_entrance: "ปลายทาง: ทางเข้าพิพิธภัณฑ์",
+                qr_step1_b: "สแกน", qr_step1_t: "QR Code ด้วยกล้องมือถือ",
+                qr_step2_b: "เปิด", qr_step2_t: "ลิงก์ในเบราว์เซอร์",
+                qr_step3_b: "กดปุ่ม", qr_step3_t: "\"เริ่มนำทาง (Google Maps)\"",
+                qr_step4_b: "เดินตาม", qr_step4_t: "เส้นทางในแอป Google Maps",
+                qr_btn_print: "พิมพ์ QR Code",
+                lang_btn: "EN",
+                qr_loading: "กำลังสร้าง QR Code...",
+                qr_error: "เกิดข้อผิดพลาดในการสร้าง QR Code จากเซิร์ฟเวอร์ (API Error)"
+            },
+            en: {
+                qr_title: "🏛️ Generate Navigation QR",
+                qr_subtitle: "Select destination and scan QR Code for walking directions",
+                qr_placeholder: "Enter main system URL (No trailing /)",
+                qr_btn_gen: "Generate QR",
+                qr_url_req: "Please enter URL and select destination",
+                route_ticket: "Destination: Ticket Office",
+                route_entrance: "Destination: Museum Entrance",
+                qr_step1_b: "Scan", qr_step1_t: "QR Code with your camera",
+                qr_step2_b: "Open", qr_step2_t: "the browser link",
+                qr_step3_b: "Click", qr_step3_t: "\"Start Navigation (Google Maps)\"",
+                qr_step4_b: "Follow", qr_step4_t: "instructions in Google Maps app",
+                qr_btn_print: "Print QR Code",
+                lang_btn: "ZH",
+                qr_loading: "Generating QR Code...",
+                qr_error: "Failed to generate QR Code from server (API Error)"
+            },
+            zh: {
+                qr_title: "🏛️ 生成导航二维码",
+                qr_subtitle: "选择目的地并扫描二维码以进行步行导航",
+                qr_placeholder: "输入主系统网址 (末尾无 /)",
+                qr_btn_gen: "生成二维码",
+                qr_url_req: "请输入URL并选择目的地",
+                route_ticket: "目的地：售票处",
+                route_entrance: "目的地：博物馆入口",
+                qr_step1_b: "扫描", qr_step1_t: "使用相机扫描二维码",
+                qr_step2_b: "打开", qr_step2_t: "浏览器链接",
+                qr_step3_b: "点击", qr_step3_t: "“开始导航 (Google Maps)”",
+                qr_step4_b: "按照", qr_step4_t: "谷歌地图应用中的说明操作",
+                qr_btn_print: "打印二维码",
+                lang_btn: "TH",
+                qr_loading: "正在生成二维码...",
+                qr_error: "从服务器生成二维码失败（API错误）"
+            }
+        };
+
+        let currentLang = 'th';
+
+        function toggleLanguage() {
+            if (currentLang === 'th') currentLang = 'en';
+            else if (currentLang === 'en') currentLang = 'zh';
+            else currentLang = 'th';
+            
+            applyTranslations();
+            
+            const langBtn = document.getElementById('lang-text');
+            if (langBtn) {
+                langBtn.textContent = translations[currentLang].lang_btn;
+            }
+
+            // Update dynamically generated text
+            const container = document.getElementById('qr-container');
+            if (container.querySelector('p')) {
+                if (container.innerHTML.includes('red')) {
+                    container.innerHTML = `<p style="color:red;">${translations[currentLang].qr_error}</p>`;
+                } else {
+                    container.innerHTML = `<p style="color:#000;">${translations[currentLang].qr_loading}</p>`;
+                }
+            }
+
+        }
+
+        function applyTranslations() {
+            // Text Elements
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+            
+            // Placeholders
+            const placeholders = document.querySelectorAll('[data-i18n-ph]');
+            placeholders.forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (translations[currentLang][key]) {
+                    el.placeholder = translations[currentLang][key];
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', applyTranslations);
+    </script>
+</body>
+</html>
