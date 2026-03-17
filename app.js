@@ -65,7 +65,7 @@ function openGoogleMaps() {
     url += `&travelmode=walking&dir_action=navigate`;
 
     // Open in a new tab (or redirect to native app on mobile)
-    window.open(url, '_blank');
+    window.location.href = url;
 }
 
 // Make function globally available
