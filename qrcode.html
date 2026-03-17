@@ -240,7 +240,7 @@
         <div id="qr-container"></div>
 
         <p class="destination-label" id="destination-label" style="display: none;"></p>
-        <p class="print-subtitle" style="display: none;">สแกนเพื่อนำทางด้วย Google Maps 🗺️</p>
+        <p class="print-subtitle" data-i18n="print_subtitle" style="display: none;">สแกนเพื่อนำทางด้วย Google Maps 🗺️</p>
 
         <div class="url-box" id="url-display">กำลังสร้าง URL...</div>
 
@@ -347,6 +347,7 @@
                 qr_step3_b: "กดปุ่ม", qr_step3_t: "\"เริ่มนำทาง (Google Maps)\"",
                 qr_step4_b: "เดินตาม", qr_step4_t: "เส้นทางในแอป Google Maps",
                 qr_btn_print: "พิมพ์ QR Code",
+                print_subtitle: "สแกนเพื่อนำทางด้วย Google Maps 🗺️",
                 lang_btn: "EN",
                 qr_loading: "กำลังสร้าง QR Code...",
                 qr_error: "เกิดข้อผิดพลาดในการสร้าง QR Code จากเซิร์ฟเวอร์ (API Error)"
@@ -368,6 +369,7 @@
                 qr_step3_b: "Click", qr_step3_t: "\"Start Navigation (Google Maps)\"",
                 qr_step4_b: "Follow", qr_step4_t: "instructions in Google Maps app",
                 qr_btn_print: "Print QR Code",
+                print_subtitle: "Scan to navigate with Google Maps 🗺️",
                 lang_btn: "ZH",
                 qr_loading: "Generating QR Code...",
                 qr_error: "Failed to generate QR Code from server (API Error)"
@@ -389,6 +391,7 @@
                 qr_step3_b: "点击", qr_step3_t: "“开始导航 (Google Maps)”",
                 qr_step4_b: "按照", qr_step4_t: "谷歌地图应用中的说明操作",
                 qr_btn_print: "打印二维码",
+                print_subtitle: "扫描以通过谷歌地图导航 🗺️",
                 lang_btn: "TH",
                 qr_loading: "正在生成二维码...",
                 qr_error: "从服务器生成二维码失败（API错误）"
@@ -418,6 +421,11 @@
                     container.innerHTML = `<p style="color:#000;">${translations[currentLang].qr_loading}</p>`;
                 }
             }
+
+            // Update destination label for print
+            const select = document.getElementById('route-select');
+            const selectedText = select.options[select.selectedIndex].textContent;
+            document.getElementById('destination-label').textContent = '📍 ' + selectedText;
 
         }
 
