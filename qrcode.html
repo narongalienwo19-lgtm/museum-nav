@@ -193,7 +193,8 @@
             h1 { -webkit-text-fill-color: #000; background: none; }
             .subtitle { color: #666; }
             .btn-print, .input-group, .lang-toggle { display: none !important; }
-            .url-box { color: #333; border-color: #ccc; }
+            .url-box { display: none !important; }
+            .destination-label { display: block !important; font-size: 1.2rem; font-weight: 700; color: #000; margin-bottom: 1rem; }
             .instructions strong { color: #000; }
         }
     </style>
@@ -235,6 +236,8 @@
         </div>
 
         <div id="qr-container"></div>
+
+        <p class="destination-label" id="destination-label" style="display: none;"></p>
 
         <div class="url-box" id="url-display">กำลังสร้าง URL...</div>
 
@@ -306,6 +309,11 @@
             img.style.height = '250px';
             
             document.getElementById('url-display').textContent = url;
+            
+            // Set destination label for print
+            const select = document.getElementById('route-select');
+            const selectedText = select.options[select.selectedIndex].textContent;
+            document.getElementById('destination-label').textContent = '📍 ' + selectedText;
         }
 
         // Auto-generate on load
