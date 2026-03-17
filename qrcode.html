@@ -295,9 +295,9 @@
                         (ขายบัตรเข้าชม)</option>
                 </optgroup>
                 <optgroup label="📍 Google Maps ตรง (ปลายทางอย่างเดียว)" data-i18n-label="optgroup_direct">
-                    <option value="direct_ticket_office" data-i18n="route_direct_ticket">📍 Google Maps ตรง:
+                    <option value="direct_ticket_office" data-i18n="route_direct_ticket">📍 Google Maps:
                         พิพิธภัณฑ์การแพทย์ศิริราช</option>
-                    <option value="direct_museum_entrance" data-i18n="route_direct_entrance">📍 Google Maps ตรง:
+                    <option value="direct_museum_entrance" data-i18n="route_direct_entrance">📍 Google Maps:
                         พิพิธภัณฑ์ศิริราชพิมุขสถาน</option>
                 </optgroup>
             </select>
@@ -315,8 +315,8 @@
         <ol class="instructions">
             <li><strong data-i18n="qr_step1_b">สแกน</strong> <span data-i18n="qr_step1_t">QR Code ด้วยกล้องมือถือ</span>
             </li>
-            <li><strong data-i18n="qr_step2_b">เปิด</strong> <span data-i18n="qr_step2_t">ลิงก์ในเบราว์เซอร์</span></li>
-            <li><strong data-i18n="qr_step3_b">กดปุ่ม</strong> <span data-i18n="qr_step3_t">"เริ่มนำทาง (Google
+            <li id="step-2"><strong data-i18n="qr_step2_b">เปิด</strong> <span data-i18n="qr_step2_t">ลิงก์ในเบราว์เซอร์</span></li>
+            <li id="step-3"><strong data-i18n="qr_step3_b">กดปุ่ม</strong> <span data-i18n="qr_step3_t">"เริ่มนำทาง (Google
                     Maps)"</span></li>
             <li><strong data-i18n="qr_step4_b">เดินตาม</strong> <span data-i18n="qr_step4_t">เส้นทางในแอป Google
                     Maps</span></li>
@@ -388,6 +388,11 @@
             const select = document.getElementById('route-select');
             const selectedText = select.options[select.selectedIndex].textContent;
             document.getElementById('destination-label').textContent = selectedText.includes('📍') ? selectedText : '📍 ' + selectedText;
+
+            // Show/hide steps 2 & 3 based on route type
+            const isDirect = routeId.startsWith('direct_');
+            document.getElementById('step-2').style.display = isDirect ? 'none' : '';
+            document.getElementById('step-3').style.display = isDirect ? 'none' : '';
         }
 
         // Auto-generate on load
