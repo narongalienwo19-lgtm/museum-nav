@@ -189,12 +189,13 @@
 
         @media print {
             body { background: #fff; color: #000; }
-            .card { border: 2px solid #000; backdrop-filter: none; background: #fff; }
-            h1 { -webkit-text-fill-color: #000; background: none; }
-            .subtitle { color: #666; }
+            .card { border: 2px solid #000; backdrop-filter: none; background: #fff; display: flex; flex-direction: column; }
+            h1, .subtitle { display: none !important; }
             .btn-print, .input-group, .lang-toggle { display: none !important; }
             .url-box { display: none !important; }
-            .destination-label { display: block !important; font-size: 1.2rem; font-weight: 700; color: #000; margin-bottom: 1rem; }
+            .destination-label { display: block !important; font-size: 1.4rem; font-weight: 800; color: #000; margin-bottom: 1rem; order: -1; text-align: center; }
+            #qr-container { order: 0; }
+            .instructions { order: 1; }
             .instructions strong { color: #000; }
         }
     </style>
