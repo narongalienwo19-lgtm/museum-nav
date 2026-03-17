@@ -296,7 +296,7 @@
             container.innerHTML = '<p style="color:#000;">กำลังสร้าง QR Code...</p>';
             
             // Use qrserver API as a reliable alternative
-            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}`;
             
             const img = new Image();
             img.onload = function() {
@@ -308,8 +308,8 @@
             };
             img.src = qrImageUrl;
             img.style.display = 'block';
-            img.style.width = '250px';
-            img.style.height = '250px';
+            img.style.width = '100%';
+            img.style.height = 'auto';
             
             document.getElementById('url-display').textContent = url;
             
