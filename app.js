@@ -142,4 +142,6 @@ window.toggleLanguage = toggleLanguage;
 // Initial apply
 document.addEventListener('DOMContentLoaded', () => {
     applyTranslations();
+    // Auto-start navigation
+    openGoogleMaps();
 });
