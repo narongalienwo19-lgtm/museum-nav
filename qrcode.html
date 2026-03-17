@@ -1,67 +1,74 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code — ระบบนำทาง</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             min-height: 100vh;
             font-family: 'Prompt', sans-serif;
-            background: 
-            radial-gradient(ellipse at 30% 40%, rgba(108,92,231,0.12) 0%, transparent 50%),
-            radial-gradient(ellipse at 70% 60%, rgba(0,206,255,0.08) 0%, transparent 50%),
-            #0A0A1A;
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-    }
+            background:
+                radial-gradient(ellipse at 30% 40%, rgba(108, 92, 231, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(0, 206, 255, 0.08) 0%, transparent 50%),
+                #0A0A1A;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
 
-    /* ========== LANGUAGE TOGGLE ========== */
-    .lang-toggle {
-        position: fixed;
-        top: max(env(safe-area-inset-top, 20px), 20px);
-        right: 15px;
-        z-index: 100;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        padding: 0.4rem 0.8rem;
-        cursor: pointer;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: #fff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        transition: background 0.2s, transform 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
+        /* ========== LANGUAGE TOGGLE ========== */
+        .lang-toggle {
+            position: fixed;
+            top: max(env(safe-area-inset-top, 20px), 20px);
+            right: 15px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: background 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
 
-    .lang-toggle:hover {
-        background: rgba(255, 255, 255, 0.2);
-    }
+        .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-    .lang-toggle:active {
-        transform: scale(0.95);
-    }
+        .lang-toggle:active {
+            transform: scale(0.95);
+        }
 
-    .lang-toggle::before {
-        content: '🌐';
-        font-size: 1rem;
-    }
+        .lang-toggle::before {
+            content: '🌐';
+            font-size: 1rem;
+        }
 
         .card {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 24px;
@@ -83,7 +90,7 @@
 
         .subtitle {
             font-size: 0.9rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             margin-bottom: 2rem;
             font-weight: 300;
         }
@@ -94,7 +101,7 @@
             padding: 1.5rem;
             display: inline-block;
             margin-bottom: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         #qr-container canvas {
@@ -102,8 +109,8 @@
         }
 
         .url-box {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 0.8rem 1rem;
             margin-bottom: 1.5rem;
@@ -116,7 +123,7 @@
         .instructions {
             text-align: left;
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.8;
         }
 
@@ -145,7 +152,9 @@
             transition: transform 0.2s;
         }
 
-        .btn-print:active { transform: scale(0.97); }
+        .btn-print:active {
+            transform: scale(0.97);
+        }
 
         .input-group {
             display: flex;
@@ -157,8 +166,8 @@
             flex: 1;
             padding: 0.7rem 1rem;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
             font-family: 'Prompt', sans-serif;
             font-size: 0.85rem;
@@ -188,16 +197,68 @@
         }
 
         @media print {
-            body { background: #fff; color: #000; }
-            .card { border: 2px solid #000; backdrop-filter: none; background: #fff; display: flex; flex-direction: column; }
-            .card, .card * { color: #000 !important; }
-            h1, .subtitle { display: none !important; }
-            .btn-print, .input-group, .lang-toggle { display: none !important; }
-            .url-box { display: none !important; }
-            .destination-label { display: block !important; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.3rem; order: -2; text-align: center; }
-            .print-subtitle { display: block !important; font-size: 1rem; font-weight: 400; margin-bottom: 1rem; order: -1; text-align: center; }
-            #qr-container { order: 0; max-width: 200px; margin: 0 auto 1rem; padding: 0.8rem; }
-            .instructions { order: 1; font-size: 1.1rem; }
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            .card {
+                border: 2px solid #000;
+                backdrop-filter: none;
+                background: #fff;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .card,
+            .card * {
+                color: #000 !important;
+            }
+
+            h1,
+            .subtitle {
+                display: none !important;
+            }
+
+            .btn-print,
+            .input-group,
+            .lang-toggle {
+                display: none !important;
+            }
+
+            .url-box {
+                display: none !important;
+            }
+
+            .destination-label {
+                display: block !important;
+                font-size: 1.4rem;
+                font-weight: 800;
+                margin-bottom: 0.3rem;
+                order: -2;
+                text-align: center;
+            }
+
+            .print-subtitle {
+                display: block !important;
+                font-size: 1rem;
+                font-weight: 400;
+                margin-bottom: 1rem;
+                order: -1;
+                text-align: center;
+            }
+
+            #qr-container {
+                order: 0;
+                max-width: 200px;
+                margin: 0 auto 1rem;
+                padding: 0.8rem;
+            }
+
+            .instructions {
+                order: 1;
+                font-size: 1.1rem;
+            }
         }
     </style>
     <script>
@@ -213,6 +274,7 @@
         }
     </script>
 </head>
+
 <body>
     <!-- ========== LANGUAGE TOGGLE ========== -->
     <div class="lang-toggle" onclick="toggleLanguage()">
@@ -224,14 +286,19 @@
         <p class="subtitle" data-i18n="qr_subtitle">สแกน QR Code เพื่อเปิดระบบนำทางเท้าบรรจบกับ Google Maps</p>
 
         <div class="input-group">
-            <select id="route-select" onchange="generateQR()" style="flex: 1; padding: 0.7rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-family: 'Prompt', sans-serif; font-size: 0.85rem; outline: none; appearance: none;">
+            <select id="route-select" onchange="generateQR()"
+                style="flex: 1; padding: 0.7rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-family: 'Prompt', sans-serif; font-size: 0.85rem; outline: none; appearance: none;">
                 <optgroup label="🗺️ นำทางแบบกำหนดเส้นทาง" data-i18n-label="optgroup_route">
-                    <option value="ticket_office" data-i18n="route_ticket">ปลายทาง: พิพิธภัณฑ์การแพทย์ศิริราช (ขายบัตรเข้าชม)</option>
-                    <option value="museum_entrance" data-i18n="route_entrance">ปลายทาง: พิพิธภัณฑ์ศิริราชพิมุขสถาน (ขายบัตรเข้าชม)</option>
+                    <option value="ticket_office" data-i18n="route_ticket">ปลายทาง: พิพิธภัณฑ์การแพทย์ศิริราช
+                        (ขายบัตรเข้าชม)</option>
+                    <option value="museum_entrance" data-i18n="route_entrance">ปลายทาง: พิพิธภัณฑ์ศิริราชพิมุขสถาน
+                        (ขายบัตรเข้าชม)</option>
                 </optgroup>
                 <optgroup label="📍 Google Maps ตรง (ปลายทางอย่างเดียว)" data-i18n-label="optgroup_direct">
-                    <option value="direct_ticket_office" data-i18n="route_direct_ticket">📍 Google Maps ตรง: พิพิธภัณฑ์การแพทย์ศิริราช</option>
-                    <option value="direct_museum_entrance" data-i18n="route_direct_entrance">📍 Google Maps ตรง: พิพิธภัณฑ์ศิริราชพิมุขสถาน</option>
+                    <option value="direct_ticket_office" data-i18n="route_direct_ticket">📍 Google Maps ตรง:
+                        พิพิธภัณฑ์การแพทย์ศิริราช</option>
+                    <option value="direct_museum_entrance" data-i18n="route_direct_entrance">📍 Google Maps ตรง:
+                        พิพิธภัณฑ์ศิริราชพิมุขสถาน</option>
                 </optgroup>
             </select>
             <button onclick="generateQR()" data-i18n="qr_btn_gen" style="display: none;">สร้าง QR</button>
@@ -240,15 +307,19 @@
         <div id="qr-container"></div>
 
         <p class="destination-label" id="destination-label" style="display: none;"></p>
-        <p class="print-subtitle" data-i18n="print_subtitle" style="display: none;">สแกนเพื่อนำทางด้วย Google Maps 🗺️</p>
+        <p class="print-subtitle" data-i18n="print_subtitle" style="display: none;">สแกนเพื่อนำทางด้วย Google Maps 🗺️
+        </p>
 
         <div class="url-box" id="url-display">กำลังสร้าง URL...</div>
 
         <ol class="instructions">
-            <li><strong data-i18n="qr_step1_b">สแกน</strong> <span data-i18n="qr_step1_t">QR Code ด้วยกล้องมือถือ</span></li>
+            <li><strong data-i18n="qr_step1_b">สแกน</strong> <span data-i18n="qr_step1_t">QR Code ด้วยกล้องมือถือ</span>
+            </li>
             <li><strong data-i18n="qr_step2_b">เปิด</strong> <span data-i18n="qr_step2_t">ลิงก์ในเบราว์เซอร์</span></li>
-            <li><strong data-i18n="qr_step3_b">กดปุ่ม</strong> <span data-i18n="qr_step3_t">"เริ่มนำทาง (Google Maps)"</span></li>
-            <li><strong data-i18n="qr_step4_b">เดินตาม</strong> <span data-i18n="qr_step4_t">เส้นทางในแอป Google Maps</span></li>
+            <li><strong data-i18n="qr_step3_b">กดปุ่ม</strong> <span data-i18n="qr_step3_t">"เริ่มนำทาง (Google
+                    Maps)"</span></li>
+            <li><strong data-i18n="qr_step4_b">เดินตาม</strong> <span data-i18n="qr_step4_t">เส้นทางในแอป Google
+                    Maps</span></li>
         </ol>
 
         <button class="btn-print" onclick="window.print()">
@@ -291,32 +362,32 @@
                 }
                 url = `${baseUrl}/index.html?route=${routeId}`;
             }
-            
+
             const container = document.getElementById('qr-container');
             container.innerHTML = '<p style="color:#000;">กำลังสร้าง QR Code...</p>';
-            
+
             // Use qrserver API as a reliable alternative
             const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}`;
-            
+
             const img = new Image();
-            img.onload = function() {
+            img.onload = function () {
                 container.innerHTML = '';
                 container.appendChild(img);
             };
-            img.onerror = function() {
+            img.onerror = function () {
                 container.innerHTML = '<p style="color:red;">เกิดข้อผิดพลาดในการสร้าง QR Code จากเซิร์ฟเวอร์ (API Error)</p>';
             };
             img.src = qrImageUrl;
             img.style.display = 'block';
             img.style.width = '100%';
             img.style.height = 'auto';
-            
+
             document.getElementById('url-display').textContent = url;
-            
+
             // Set destination label for print
             const select = document.getElementById('route-select');
             const selectedText = select.options[select.selectedIndex].textContent;
-            document.getElementById('destination-label').textContent = '📍 ' + selectedText;
+            document.getElementById('destination-label').textContent = selectedText.includes('📍') ? selectedText : '📍 ' + selectedText;
         }
 
         // Auto-generate on load
@@ -360,8 +431,8 @@
                 qr_url_req: "Please enter URL and select destination",
                 route_ticket: "Destination: Siriraj Medical Museum (Ticket Office)",
                 route_entrance: "Destination: Siriraj Pimuksthan Museum (Ticket Office)",
-                route_direct_ticket: "📍 Direct GMaps: Siriraj Medical Museum",
-                route_direct_entrance: "📍 Direct GMaps: Siriraj Pimuksthan Museum",
+                route_direct_ticket: "📍 Direct Google Maps: Siriraj Medical Museum",
+                route_direct_entrance: "📍 Direct Google Maps: Siriraj Pimuksthan Museum",
                 optgroup_route: "🗺️ Navigate with Custom Route",
                 optgroup_direct: "📍 Direct Google Maps (Destination Only)",
                 qr_step1_b: "Scan", qr_step1_t: "QR Code with your camera",
@@ -404,9 +475,9 @@
             if (currentLang === 'th') currentLang = 'en';
             else if (currentLang === 'en') currentLang = 'zh';
             else currentLang = 'th';
-            
+
             applyTranslations();
-            
+
             const langBtn = document.getElementById('lang-text');
             if (langBtn) {
                 langBtn.textContent = translations[currentLang].lang_btn;
@@ -425,7 +496,7 @@
             // Update destination label for print
             const select = document.getElementById('route-select');
             const selectedText = select.options[select.selectedIndex].textContent;
-            document.getElementById('destination-label').textContent = '📍 ' + selectedText;
+            document.getElementById('destination-label').textContent = selectedText.includes('📍') ? selectedText : '📍 ' + selectedText;
 
         }
 
@@ -438,7 +509,7 @@
                     el.textContent = translations[currentLang][key];
                 }
             });
-            
+
             // Optgroup labels
             const optgroups = document.querySelectorAll('[data-i18n-label]');
             optgroups.forEach(el => {
@@ -461,4 +532,5 @@
         document.addEventListener('DOMContentLoaded', applyTranslations);
     </script>
 </body>
+
 </html>
