@@ -6,27 +6,27 @@
 const ROUTES = {
     ticket_office: {
         id: "ticket_office",
-        title_th: "นำทางไปตึกขายบัตร",
-        title_en: "Navigate to Ticket Office",
-        title_zh: "前往售票处的导航",
+        title_th: "นำทางไปพิพิธภัณฑ์การแพทย์ศิริราช (ขายบัตรเข้าชม)",
+        title_en: "Navigate to Siriraj Medical Museum (Ticket Office)",
+        title_zh: "前往诗里拉吉医学博物馆（售票处）的导航",
         waypoints: [
             { lat: 13.758162819432808, lng: 100.48579578947489, label: 'จุดเริ่มต้น' },
             { lat: 13.75820645739141, lng: 100.48553762684878, label: 'จุดเลี้ยว 1' },
             { lat: 13.758941137051316, lng: 100.485657655697, label: 'จุดเลี้ยว 2' },
-            { lat: 13.758971748653831, lng: 100.48518022250298, label: 'ตึกขายบัตร' }
+            { lat: 13.758971748653831, lng: 100.48518022250298, label: 'พิพิธภัณฑ์การแพทย์ศิริราช (ขายบัตรเข้าชม)' }
         ]
     },
     museum_entrance: {
         id: "museum_entrance",
-        title_th: "นำทางไปทางเข้าพิพิธภัณฑ์",
-        title_en: "Navigate to Museum Entrance",
-        title_zh: "前往博物馆入口的导航",
+        title_th: "นำทางไปพิพิธภัณฑ์ศิริราชพิมุขสถาน (ขายบัตรเข้าชม)",
+        title_en: "Navigate to Siriraj Pimuksthan Museum (Ticket Office)",
+        title_zh: "前往诗里拉吉披目思探博物馆（售票处）的导航",
         waypoints: [
             // Dummy waypoints for illustration. Replace with actual coordinates later.
             { lat: 13.758162819432808, lng: 100.48579578947489, label: 'จุดเริ่มต้น' },
             { lat: 13.758130253767572, lng: 100.48628730426336, label: 'จุดเลี้ยว 1' },
             { lat: 13.759362534696093, lng: 100.48631144415502, label: 'จุดเลี้ยว 2' },
-            { lat: 13.759712938972909, lng: 100.48693237554119, label: 'ทางเข้าพิพิธภัณฑ์' }
+            { lat: 13.759712938972909, lng: 100.48693237554119, label: 'พิพิธภัณฑ์ศิริราชพิมุขสถาน (ขายบัตรเข้าชม)' }
         ]
     }
 };

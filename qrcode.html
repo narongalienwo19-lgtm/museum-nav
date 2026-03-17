@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code — นำทางไปตึกขายบัตร</title>
+    <title>QR Code — ระบบนำทาง</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -216,8 +216,14 @@
 
         <div class="input-group">
             <select id="route-select" onchange="generateQR()" style="flex: 1; padding: 0.7rem 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-family: 'Prompt', sans-serif; font-size: 0.85rem; outline: none; appearance: none;">
-                <option value="ticket_office" data-i18n="route_ticket">ตึกขายบัตร</option>
-                <option value="museum_entrance" data-i18n="route_entrance">ทางเข้าพิพิธภัณฑ์</option>
+                <optgroup label="🗺️ นำทางแบบกำหนดเส้นทาง" data-i18n-label="optgroup_route">
+                    <option value="ticket_office" data-i18n="route_ticket">ปลายทาง: พิพิธภัณฑ์การแพทย์ศิริราช (ขายบัตรเข้าชม)</option>
+                    <option value="museum_entrance" data-i18n="route_entrance">ปลายทาง: พิพิธภัณฑ์ศิริราชพิมุขสถาน (ขายบัตรเข้าชม)</option>
+                </optgroup>
+                <optgroup label="📍 Google Maps ตรง (ปลายทางอย่างเดียว)" data-i18n-label="optgroup_direct">
+                    <option value="direct_ticket_office" data-i18n="route_direct_ticket">📍 Google Maps ตรง: พิพิธภัณฑ์การแพทย์ศิริราช</option>
+                    <option value="direct_museum_entrance" data-i18n="route_direct_entrance">📍 Google Maps ตรง: พิพิธภัณฑ์ศิริราชพิมุขสถาน</option>
+                </optgroup>
             </select>
             <button onclick="generateQR()" data-i18n="qr_btn_gen" style="display: none;">สร้าง QR</button>
         </div>
@@ -239,14 +245,34 @@
     </div>
 
     <script>
+        // Direct Google Maps destinations (no waypoints)
+        const DIRECT_DESTINATIONS = {
+            direct_ticket_office: {
+                lat: 13.758971748653831,
+                lng: 100.48518022250298,
+                label: 'พิพิธภัณฑ์การแพทย์ศิริราช (ขายบัตรเข้าชม)'
+            },
+            direct_museum_entrance: {
+                lat: 13.759712938972909,
+                lng: 100.48693237554119,
+                label: 'พิพิธภัณฑ์ศิริราชพิมุขสถาน (ขายบัตรเข้าชม)'
+            }
+        };
+
         function generateQR() {
-            // Auto-determine base URL relative to current location
-            let baseUrl = window.location.href.split('?')[0].replace('qrcode.html', '');
-            if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
-            
-            // Add route parameter
             const routeId = document.getElementById('route-select').value;
-            const url = `${baseUrl}/index.html?route=${routeId}`;
+            let url;
+
+            if (DIRECT_DESTINATIONS[routeId]) {
+                // Direct Google Maps URL — destination only, no waypoints
+                const dest = DIRECT_DESTINATIONS[routeId];
+                url = `https://www.google.com/maps/dir/?api=1&destination=${dest.lat},${dest.lng}&travelmode=walking&dir_action=navigate`;
+            } else {
+                // Route through our app (with waypoints)
+                let baseUrl = window.location.href.split('?')[0].replace('qrcode.html', '');
+                if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+                url = `${baseUrl}/index.html?route=${routeId}`;
+            }
             
             const container = document.getElementById('qr-container');
             container.innerHTML = '<p style="color:#000;">กำลังสร้าง QR Code...</p>';
@@ -287,8 +313,12 @@
                 qr_placeholder: "ใส่ URL ของระบบ หน้าหลัก (ไม่มี / ต่อท้าย)",
                 qr_btn_gen: "สร้าง QR",
                 qr_url_req: "กรุณาใส่ URL และเลือกเป้าหมาย",
-                route_ticket: "ปลายทาง: ตึกขายบัตร",
-                route_entrance: "ปลายทาง: ทางเข้าพิพิธภัณฑ์",
+                route_ticket: "ปลายทาง: พิพิธภัณฑ์การแพทย์ศิริราช (ขายบัตรเข้าชม)",
+                route_entrance: "ปลายทาง: พิพิธภัณฑ์ศิริราชพิมุขสถาน (ขายบัตรเข้าชม)",
+                route_direct_ticket: "📍 Google Maps ตรง: พิพิธภัณฑ์การแพทย์ศิริราช",
+                route_direct_entrance: "📍 Google Maps ตรง: พิพิธภัณฑ์ศิริราชพิมุขสถาน",
+                optgroup_route: "🗺️ นำทางแบบกำหนดเส้นทาง",
+                optgroup_direct: "📍 Google Maps ตรง (ปลายทางอย่างเดียว)",
                 qr_step1_b: "สแกน", qr_step1_t: "QR Code ด้วยกล้องมือถือ",
                 qr_step2_b: "เปิด", qr_step2_t: "ลิงก์ในเบราว์เซอร์",
                 qr_step3_b: "กดปุ่ม", qr_step3_t: "\"เริ่มนำทาง (Google Maps)\"",
@@ -304,8 +334,12 @@
                 qr_placeholder: "Enter main system URL (No trailing /)",
                 qr_btn_gen: "Generate QR",
                 qr_url_req: "Please enter URL and select destination",
-                route_ticket: "Destination: Ticket Office",
-                route_entrance: "Destination: Museum Entrance",
+                route_ticket: "Destination: Siriraj Medical Museum (Ticket Office)",
+                route_entrance: "Destination: Siriraj Pimuksthan Museum (Ticket Office)",
+                route_direct_ticket: "📍 Direct GMaps: Siriraj Medical Museum",
+                route_direct_entrance: "📍 Direct GMaps: Siriraj Pimuksthan Museum",
+                optgroup_route: "🗺️ Navigate with Custom Route",
+                optgroup_direct: "📍 Direct Google Maps (Destination Only)",
                 qr_step1_b: "Scan", qr_step1_t: "QR Code with your camera",
                 qr_step2_b: "Open", qr_step2_t: "the browser link",
                 qr_step3_b: "Click", qr_step3_t: "\"Start Navigation (Google Maps)\"",
@@ -321,8 +355,12 @@
                 qr_placeholder: "输入主系统网址 (末尾无 /)",
                 qr_btn_gen: "生成二维码",
                 qr_url_req: "请输入URL并选择目的地",
-                route_ticket: "目的地：售票处",
-                route_entrance: "目的地：博物馆入口",
+                route_ticket: "目的地：诗里拉吉医学博物馆（售票处）",
+                route_entrance: "目的地：诗里拉吉披目思探博物馆（售票处）",
+                route_direct_ticket: "📍 直接谷歌地图：诗里拉吉医学博物馆",
+                route_direct_entrance: "📍 直接谷歌地图：诗里拉吉披目思探博物馆",
+                optgroup_route: "🗺️ 自定义路线导航",
+                optgroup_direct: "📍 直接谷歌地图（仅目的地）",
                 qr_step1_b: "扫描", qr_step1_t: "使用相机扫描二维码",
                 qr_step2_b: "打开", qr_step2_t: "浏览器链接",
                 qr_step3_b: "点击", qr_step3_t: "“开始导航 (Google Maps)”",
@@ -370,6 +408,15 @@
                 }
             });
             
+            // Optgroup labels
+            const optgroups = document.querySelectorAll('[data-i18n-label]');
+            optgroups.forEach(el => {
+                const key = el.getAttribute('data-i18n-label');
+                if (translations[currentLang][key]) {
+                    el.label = translations[currentLang][key];
+                }
+            });
+
             // Placeholders
             const placeholders = document.querySelectorAll('[data-i18n-ph]');
             placeholders.forEach(el => {
