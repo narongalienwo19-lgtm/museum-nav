@@ -275,8 +275,14 @@
                 url = `https://www.google.com/maps/dir/?api=1&destination=${dest.lat},${dest.lng}&travelmode=walking&dir_action=navigate`;
             } else {
                 // Route through our app (with waypoints)
-                let baseUrl = window.location.href.split('?')[0].replace('qrcode.html', '');
-                if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+                // Handle both /qrcode.html and /qrcode/index.html paths
+                let currentPath = window.location.href.split('?')[0];
+                // Remove the filename (index.html or qrcode.html)
+                let baseUrl = currentPath.substring(0, currentPath.lastIndexOf('/'));
+                // If we're inside a /qrcode/ subdirectory, go up one more level
+                if (baseUrl.endsWith('/qrcode')) {
+                    baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf('/'));
+                }
                 url = `${baseUrl}/index.html?route=${routeId}`;
             }
             
